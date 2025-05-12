@@ -10,7 +10,7 @@
       font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f8f8f8;
+      background-color: #f4f4f4;
     }
     header {
       background-color: #333;
@@ -20,72 +20,64 @@
     }
     nav {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       background-color: #444;
     }
-    nav a {
+    nav button {
       color: white;
-      padding: 14px 20px;
-      text-decoration: none;
-      text-align: center;
+      padding: 10px 15px;
+      margin: 5px;
+      background-color: #444;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
     }
-    nav a:hover {
+    nav button:hover {
       background-color: #575757;
+    }
+    .slider {
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    .slides {
+      display: flex;
+      transition: transform 1s ease;
+    }
+    .slides img {
+      width: 100%;
+      height: auto;
     }
     .container {
       padding: 20px;
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-around;
+      justify-content: center;
     }
     .product {
       background-color: white;
       border: 1px solid #ddd;
       border-radius: 8px;
       margin: 10px;
-      padding: 20px;
-      width: 250px;
+      padding: 10px;
+      width: 180px;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     .product img {
       max-width: 100%;
       height: auto;
-      border-radius: 8px;
+      border-radius: 6px;
     }
     .product h3 {
-      font-size: 1.2rem;
-      margin: 15px 0;
-    }
-    .product p {
       font-size: 1rem;
-      color: #777;
+      margin: 10px 0 5px;
     }
-    .product .price {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-    .product button {
-      background-color: #28a745;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    .product button:hover {
-      background-color: #218838;
-    }
-    footer {
-      background-color: #333;
-      color: white;
-      text-align: center;
-      padding: 10px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
+    .hidden {
+      display: none;
     }
   </style>
 </head>
@@ -93,54 +85,73 @@
 
 <header>
   <h1>Тюбики на продажу</h1>
-  <p>Качество и надежность — тюбики для всех нужд</p>
+  <p>Категории на любой вкус</p>
 </header>
 
-<nav>
-  <a href="#">Главная</a>
-  <a href="#">Каталог</a>
-  <a href="#">О нас</a>
-  <a href="#">Контакты</a>
-</nav>
-
-<div class="container">
-  <!-- Продукты -->
-  <div class="product">
-    <img src="https://via.placeholder.com/250" alt="Тюбик 1">
-    <h3>Тюбик 1</h3>
-    <p>Простой и удобный тюбик для использования в различных сферах</p>
-    <div class="price">300 руб.</div>
-    <button onclick="addToCart('Тюбик 1', 300)">Купить</button>
-  </div>
-
-  <div class="product">
-    <img src="https://via.placeholder.com/250" alt="Тюбик 2">
-    <h3>Тюбик 2</h3>
-    <p>Компактный и многофункциональный тюбик для дома и работы</p>
-    <div class="price">250 руб.</div>
-    <button onclick="addToCart('Тюбик 2', 250)">Купить</button>
-  </div>
-
-  <div class="product">
-    <img src="https://via.placeholder.com/250" alt="Тюбик 3">
-    <h3>Тюбик 3</h3>
-    <p>Уникальный дизайн и максимальная удобность</p>
-    <div class="price">350 руб.</div>
-    <button onclick="addToCart('Тюбик 3', 350)">Купить</button>
+<div class="slider">
+  <div class="slides">
+    <img src="https://via.placeholder.com/800x200?text=%D0%A0%D0%B5%D0%BA%D0%BB%D0%B0%D0%BC%D0%B0+1" alt="Реклама 1">
+    <img src="https://via.placeholder.com/800x200?text=%D0%A0%D0%B5%D0%BA%D0%BB%D0%B0%D0%BC%D0%B0+2" alt="Реклама 2">
   </div>
 </div>
 
-<footer>
-  <p>&copy; 2025 Продажа Тюбиков</p>
-</footer>
+<nav>
+  <button onclick="filterCategory('завтраки')">Завтраки</button>
+  <button onclick="filterCategory('обеды')">Обеды</button>
+  <button onclick="filterCategory('ужин')">Ужин</button>
+  <button onclick="filterCategory('фрукты')">Фрукты и ягоды</button>
+  <button onclick="filterCategory('овощи')">Овощи</button>
+  <button onclick="filterCategory('напитки')">Напитки</button>
+  <button onclick="filterCategory('десерты')">Десерты</button>
+  <button onclick="filterCategory('фастфуд')">Фастфуд</button>
+  <button onclick="filterCategory('салаты')">Салаты и закуски</button>
+  <button onclick="filterCategory('комбо')">Комбо</button>
+</nav>
+
+<div class="container" id="products">
+  <!-- Генерируется JavaScript -->
+</div>
 
 <script>
-  let cart = [];
+  const slides = document.querySelector('.slides');
+  let index = 0;
+  setInterval(() => {
+    index = (index + 1) % 2;
+    slides.style.transform = `translateX(-${index * 100}%)`;
+  }, 3000);
 
-  function addToCart(name, price) {
-    cart.push({ name, price });
-    alert(`Товар "${name}" добавлен в корзину!`);
+  const categories = ['завтраки', 'обеды', 'ужин', 'фрукты', 'овощи', 'напитки', 'десерты', 'фастфуд', 'салаты', 'комбо'];
+  const container = document.getElementById('products');
+  let products = [];
+
+  for (let i = 0; i < 80; i++) {
+    const cat = categories[i % categories.length];
+    products.push({
+      name: `Тюбик ${i + 1}`,
+      category: cat,
+      img: `https://via.placeholder.com/150?text=Тюбик+${i + 1}`
+    });
   }
+
+  function renderProducts(category) {
+    container.innerHTML = '';
+    products.filter(p => p.category === category).forEach(product => {
+      const div = document.createElement('div');
+      div.className = 'product';
+      div.innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <h3>${product.name}</h3>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function filterCategory(cat) {
+    renderProducts(cat);
+  }
+
+  // Показать первую категорию по умолчанию
+  renderProducts(categories[0]);
 </script>
 
 </body>
